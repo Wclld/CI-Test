@@ -14,5 +14,21 @@ public class CommandBuild
         new BuildSettingsBuilder(BuildTargetGroup.Android)
             .Build();
     }
+    
+    [MenuItem("Build/Standalone")]
+    public static void BuildWindowsEditor()
+    {
+        new BuildSettingsBuilder(BuildTargetGroup.Standalone)
+            .DoNotQuitOnFinish()
+            .Build();
+    }
+
+    [MenuItem("Build/Android")]
+    public static void BuildAndroidEditor()
+    {
+        new BuildSettingsBuilder(BuildTargetGroup.Android)
+            .DoNotQuitOnFinish()
+            .Build();
+    }
 
 }

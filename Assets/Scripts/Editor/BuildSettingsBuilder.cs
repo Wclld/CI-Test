@@ -10,6 +10,7 @@ public class BuildSettingsBuilder
 {
     private readonly BuildTargetGroup _platform = BuildTargetGroup.Unknown;
     private bool _playStoreBuild = false;
+    private bool _quitOnFinish = false;
 
     public BuildSettingsBuilder(BuildTargetGroup platform)
     {
@@ -33,7 +34,8 @@ public class BuildSettingsBuilder
         else
             Debug.LogError($"Build {buildReport.summary.result} - [Errors: {buildReport.SummarizeErrors()}]");
 
-        EditorApplication.Exit(buildReport.summary.result == BuildResult.Succeeded ? 0 : 1);
+        if(_quitOnFinish)
+            EditorApplication.Exit(buildReport.summary.result == BuildResult.Succeeded ? 0 : 1);
     }
     
     private string GetBuildPath() =>
@@ -69,6 +71,12 @@ public class BuildSettingsBuilder
     public BuildSettingsBuilder SetPlayStoreBuild()
     {
         _playStoreBuild = true;
+        return this;
+    }
+
+    public BuildSettingsBuilder DoNotQuitOnFinish()
+    {
+        _quitOnFinish = false;
         return this;
     }
 }
