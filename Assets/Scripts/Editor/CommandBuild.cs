@@ -7,11 +7,12 @@ public class CommandBuild
 
     public static void TEST_BUILD()
     {
-        Debug.Log("Building Test");
-        Debug.Log("Building Test");
+        Debug.LogError("Building Test");
+        Debug.LogError("Building Test");
     }
     public static void BuildWindows()
     {
+        Debug.LogError("Building Test");
         Debug.Log("Building Windows");
         new BuildSettingsBuilder(BuildTargetGroup.Standalone)
             .Build();
