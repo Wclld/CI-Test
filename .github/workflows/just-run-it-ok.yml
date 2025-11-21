@@ -1,13 +1,9 @@
-name: Unity Android Build
+name: Just_run_that_goddamn_editor
 
 on: workflow_dispatch
-  # push:
-  #   branches:
-  #     - main
-  #     - develop
 
 jobs:
-  build-android:
+  run-unity:
     runs-on: self-hosted
 
     steps:
@@ -17,11 +13,10 @@ jobs:
       - name: Run Unity Windows build
         shell: powershell
         run: |
-          Write-Host "=== Unity build starting ==="
+          Write-Host "=== Unity run starting ==="
 
           & T:\UnityEditor\Editors\6000.0.49f1\Editor\Unity.exe `
             -projectPath "$PWD" `
-            -executeMethod CommandBuild.TEST_BUILD `
             -logFile -
 
           $exitCode = $LASTEXITCODE
@@ -31,9 +26,3 @@ jobs:
             Write-Error "Unity build failed"
             exit $exitCode
           }
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Android-Build
-          path: Build/Android
