@@ -19,6 +19,7 @@ public class BuildSettingsBuilder
 
     public void Build()
     {
+        Debug.Log("Collecting build settings!");
         string[] scenes = EditorBuildSettings.scenes
             .Where(x => x.enabled)
             .Select(x => x.path)
@@ -28,7 +29,10 @@ public class BuildSettingsBuilder
         DisableSplashScreensForProLicense();
         var outPath = GetBuildPath();
         var target = GetBuildTarget();
+
+        Debug.Log("Build Started!");
         BuildReport buildReport = BuildPipeline.BuildPlayer(scenes, outPath, target, buildOptions);
+        Debug.Log("Build Finished!");
         if (buildReport.summary.result == BuildResult.Succeeded)
             Debug.Log($"Build succeeded - [Output: {outPath}]");
         else

@@ -1,0 +1,39 @@
+name: Unity Android Build
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-android:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run Unity Windows build
+        shell: powershell
+        run: |
+          Write-Host "=== Unity build starting ==="
+
+          & T:\UnityEditor\Editors\6000.0.49f1\Editor\Unity.exe `
+            -projectPath "$PWD" `
+            -executeMethod CommandBuild.TEST_BUILD `
+            -logFile -
+
+          $exitCode = $LASTEXITCODE
+          Write-Host "=== Unity exited with code $exitCode ==="
+
+          if ($exitCode -ne 0) {
+            Write-Error "Unity build failed"
+            exit $exitCode
+          }
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-Build
+          path: Build/Android
