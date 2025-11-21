@@ -1,0 +1,23 @@
+name: Self-hosted runner smoke test
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - test
+
+
+jobs:
+  test-runner:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Print machine info
+        run: |
+          echo Hello from self-hosted runner!
+          echo Current directory:
+          pwd
