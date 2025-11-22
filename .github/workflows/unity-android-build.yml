@@ -17,19 +17,26 @@ jobs:
       - name: Run Unity Windows build
         shell: powershell
         run: |
-          Write-Host "=== Unity build starting ==="
+          $unityExe   = "T:\UnityEditor\Editors\6000.0.49f1\Editor\Unity.exe"
+          $methodName = "CommandBuild.TEST_BUILD"
 
-          & T:\UnityEditor\Editors\6000.0.49f1\Editor\Unity.exe `
+          Write-Host $PWD
+          Write-Host "=== Unity run starting ==="
+          & $unityExe `
+            -batchmode `
+            -nographics `
             -projectPath "$PWD" `
-            -executeMethod CommandBuild.TEST_BUILD `
-            -logFile -
+            -executeMethod $methodName `
+            -quit `
+            -logFile - 2>&1 |
+            Tee-Object -FilePath "unity-run.log"
 
           $exitCode = $LASTEXITCODE
           Write-Host "=== Unity exited with code $exitCode ==="
 
           if ($exitCode -ne 0) {
-            Write-Error "Unity build failed"
-            exit $exitCode
+              Write-Error "Unity build failed"
+              exit $exitCode
           }
 
       - name: Upload build artifact

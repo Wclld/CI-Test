@@ -14,7 +14,7 @@ jobs:
         shell: powershell
         run: |
           $unityExe   = "T:\UnityEditor\Editors\6000.0.49f1\Editor\Unity.exe"
-          $methodName = "CommandBuild.TEST_BUILD"
+          $methodName = "CommandBuild.BuildWindows"
 
           Write-Host $PWD
           Write-Host "=== Unity run starting ==="
@@ -30,7 +30,12 @@ jobs:
           $exitCode = $LASTEXITCODE
           Write-Host "=== Unity exited with code $exitCode ==="
 
-          if ($exitCode -ne 0) {
-              Write-Error "Unity build failed"
-              exit $exitCode
+          if ($LASTEXITCODE -ne 0) {
+            throw "Unity failed with exit code $LASTEXITCODE"
           }
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Win-Build
+          path: build/win
