@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Unity Test
-        shell: pwsh
+        shell: powershell
         run: |
           .\build_win.ps1
 
