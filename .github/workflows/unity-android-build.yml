@@ -14,33 +14,31 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Run Unity Windows build
+      - name: Run Unity Android Build
         shell: powershell
         run: |
-          $unityExe   = "T:\UnityEditor\Editors\6000.0.49f1\Editor\Unity.exe"
-          $methodName = "CommandBuild.TEST_BUILD"
-
-          Write-Host $PWD
-          Write-Host "=== Unity run starting ==="
-          & $unityExe `
-            -batchmode `
-            -nographics `
-            -projectPath "$PWD" `
-            -executeMethod $methodName `
-            -quit `
-            -logFile - 2>&1 |
-            Tee-Object -FilePath "unity-run.log"
-
-          $exitCode = $LASTEXITCODE
-          Write-Host "=== Unity exited with code $exitCode ==="
-
-          if ($exitCode -ne 0) {
-              Write-Error "Unity build failed"
-              exit $exitCode
-          }
+          & " R:\BuildServ\CI_test\actions-runner\build_win.ps1" -BuildMethod "CommandBuild.BuildAndroid" -BuildTarget "Android"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: Android-Build
-          path: Build/Android
+          path: build/android
+
+  build-windows:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run Unity Win Build
+        shell: powershell
+        run: |
+          & " R:\BuildServ\CI_test\actions-runner\build_win.ps1" -BuildMethod "CommandBuild.BuildWindows" -BuildTarget "Win64"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Win64-Build
+          path: build/win

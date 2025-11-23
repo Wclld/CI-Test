@@ -12,7 +12,6 @@ public class CommandBuild
     }
     public static void BuildWindows()
     {
-        Debug.LogError("Building Test");
         Debug.Log("Building Windows");
         new BuildSettingsBuilder(BuildTargetGroup.Standalone)
             .Build();
