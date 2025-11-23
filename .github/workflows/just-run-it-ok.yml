@@ -10,29 +10,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Run Unity Windows build
-        shell: powershell
+      - name: Run Unity Test
+        shell: pwsh
         run: |
-          $unityExe   = "T:\UnityEditor\Editors\6000.0.49f1\Editor\Unity.exe"
-          $methodName = "CommandBuild.BuildWindows"
-
-          Write-Host $PWD
-          Write-Host "=== Unity run starting ==="
-          & $unityExe `
-            -batchmode `
-            -nographics `
-            -projectPath "$PWD" `
-            -executeMethod $methodName `
-            -quit `
-            -logFile - 2>&1 |
-            Tee-Object -FilePath "unity-run.log"
-
-          $exitCode = $LASTEXITCODE
-          Write-Host "=== Unity exited with code $exitCode ==="
-
-          if ($LASTEXITCODE -ne 0) {
-            throw "Unity failed with exit code $LASTEXITCODE"
-          }
+          .\build_win.ps1
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
