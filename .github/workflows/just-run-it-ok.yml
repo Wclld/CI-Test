@@ -13,7 +13,7 @@ jobs:
       - name: Run Unity Test
         shell: powershell
         run: |
-          .\build_win.ps1
+          ..\..\build_win.ps1
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
