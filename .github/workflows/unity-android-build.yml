@@ -52,7 +52,7 @@ jobs:
           retention-days: 5
           if-no-files-found: warn
 
-      - name: Upload artifacts ${{matrix.platform}}
+      - name: Upload artifacts on fail ${{matrix.platform}}
         if: failure()
         uses: actions/upload-artifact@v4
         with:

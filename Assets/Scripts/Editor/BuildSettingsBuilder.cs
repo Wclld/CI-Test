@@ -45,7 +45,7 @@ public class BuildSettingsBuilder
     private string GetBuildPath() =>
         _platform switch
         {
-            BuildTargetGroup.Standalone => "build/win/game.exe",
+            BuildTargetGroup.Standalone => "build/windows/game.exe",
             BuildTargetGroup.iOS => "build/ios/game.ipa",
             BuildTargetGroup.Android => _playStoreBuild
                 ? "build/android/game.aab"
