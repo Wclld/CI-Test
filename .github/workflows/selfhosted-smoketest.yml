@@ -1,15 +1,15 @@
 name: Self-hosted runner smoke test
 
-on:
-  push:
-    branches:
-      - main
-      - develop
-      - test
+on: workflow_dispatch
+  # push:
+  #   branches:
+  #     - main
+  #     - develop
+  #     - test
 
 
 jobs:
-  test-runner:
+  smoke-test:
     runs-on: self-hosted
 
     steps:

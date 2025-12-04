@@ -1,0 +1,56 @@
+name: Unity Test Runner
+
+on: workflow_dispatch
+  # push:
+  #   branches:
+  #     - main
+  #     - develop
+
+jobs:
+  test:
+    runs-on: self-hosted
+    strategy:
+      fail-fast: false
+      matrix:
+        test-mode:
+          - EditMode
+          - PlayMode
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+#        with:
+#          lfs: true # required only for lfs
+
+      - name: Cache Library Folder
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-Tests-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-Tests-
+            Library-
+            
+      - name: Run Unity Tests - ${{ matrix.test-mode }}
+        shell: powershell
+        run: |
+          & " R:\BuildServ\TestProj\actions-runner\run-tests.ps1" -TestMode ${{ matrix.test-mode }} -LogFile "unity-build-${{ matrix.platform }}.log"
+          
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.test-mode }}-${{ github.run_number }}
+          path: |
+            test-results-${{ matrix.test-mode }}.xml
+            unity-tests-${{ matrix.test-mode }}.log
+          retention-days: 3
+
+      - name: Publish Test Report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Unity Tests - ${{ matrix.test-mode }}
+          path: test-results-${{ matrix.test-mode }}.xml
+          reporter: java-junit
+          fail-on-error: true
