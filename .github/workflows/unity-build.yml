@@ -34,7 +34,7 @@ jobs:
       - name: Run Unity Tests - ${{ matrix.test-mode }}
         shell: powershell
         run: |
-          & " R:\BuildServ\TestProj\actions-runner\run-tests.ps1" -TestMode ${{ matrix.test-mode }} -LogFile "unity-build-${{ matrix.platform }}.log"
+          & " R:\BuildServ\TestProj\actions-runner\run-tests.ps1" -TestMode ${{ matrix.test-mode }} -LogFile "unity-build-${{ matrix.test-mode }}.log"
           
       - name: Upload Test Results
         if: always()
