@@ -7,38 +7,57 @@ on: workflow_dispatch
   #     - develop
 
 jobs:
-  build-android:
+  build:
     runs-on: self-hosted
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: Windows
+            build-method: CommandBuild.BuildWindows
+            build-path: build/windows
+            artifact-name: windows-build
+
+          - platform: Android
+            build-method: CommandBuild.BuildAndroid
+            build-path: build/android
+            artifact-name: android-build
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Run Unity Android Build
+      - name: Cache Library Folder
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ matrix.platform }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-${{ matrix.platform }}-
+            Library-
+
+      - name: Build Unity Project ${{matrix.platform}}
         shell: powershell
         run: |
-          & " R:\BuildServ\CI_test\actions-runner\build_win.ps1" -BuildMethod "CommandBuild.BuildAndroid" -BuildTarget "Android"
+          & " R:\BuildServ\CI_test\actions-runner\build.ps1" -BuildMethod "${{matrix.build-method}}" -LogFile "unity-build-${{ matrix.platform }}.log"
 
-      - name: Upload build artifact
+      - name: Upload artifacts ${{matrix.platform}}
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Android-Build
-          path: build/android
+          name: ${{ matrix.artifact-name }}-${{ github.run_number }}
+          path: |
+            ${{ matrix.build-path }}/**
+            unity-build-${{ matrix.platform }}.log
+          retention-days: 5
+          if-no-files-found: warn
 
-  build-windows:
-    runs-on: self-hosted
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Run Unity Win Build
-        shell: powershell
-        run: |
-          & " R:\BuildServ\CI_test\actions-runner\build_win.ps1" -BuildMethod "CommandBuild.BuildWindows" -BuildTarget "Win64"
-
-      - name: Upload build artifact
+      - name: Upload artifacts ${{matrix.platform}}
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: Win64-Build
-          path: build/win
+          name: logs-${{ matrix.platform }}-${{ github.run_number }}
+          path: |
+            unity-build-${{ matrix.platform }}.log
+            Library/Bee/buildreport.json
+          retention-days: 3

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CommandBuild
 {
-
     public static void TEST_BUILD()
     {
         Debug.LogError("Building Test");
