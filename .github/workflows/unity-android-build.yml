@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: Windows
+          - platform: Win64
             build-method: CommandBuild.BuildWindows
             build-path: build/windows
             artifact-name: windows-build
@@ -39,7 +39,7 @@ jobs:
       - name: Build Unity Project ${{matrix.platform}}
         shell: powershell
         run: |
-          & " R:\BuildServ\CI_test\actions-runner\build.ps1" -BuildMethod "${{matrix.build-method}}" -LogFile "unity-build-${{ matrix.platform }}.log"
+          & " R:\BuildServ\TestProj\actions-runner\build.ps1" -BuildTarget "${{matrix.platform}}" -BuildMethod "${{matrix.build-method}}" -LogFile "unity-build-${{ matrix.platform }}.log"
 
       - name: Upload artifacts ${{matrix.platform}}
         if: always()
